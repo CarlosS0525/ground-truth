@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Ground Truth — The world by the numbers</title>
 <meta name="description" content="Ground Truth — public data on pollution, wealth inequality, and AI energy use. Verified sources, no spin.">
 <meta property="og:url" content="https://ground-truth.info">
@@ -22,8 +22,8 @@
   --white:#fff;--off:#f4f3ef;--ink:#0c0c0c;--ink2:#333;--muted:#777;
   --border:#e0ddd6;--poll:#b83232;--wealth:#1a5c8a;--tech:#4a2580;--accent:#c8392b;
 }
-html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;max-width:100vw;-webkit-font-smoothing:antialiased}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:50px}
@@ -44,9 +44,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .hero-desc{font-size:15px;color:var(--muted);max-width:440px;line-height:1.7;margin-bottom:3.5rem;font-weight:300;border-left:2px solid var(--border);padding-left:1rem}
 
 /* CAROUSEL */
-.stat-carousel{border:1px solid var(--border);background:var(--off);padding:2rem 3.5rem 1.5rem;margin-bottom:2.5rem;position:relative;overflow:hidden}
-.carousel-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-.carousel-slide{min-width:100%;flex-shrink:0}
+.stat-carousel{border:1px solid var(--border);background:var(--off);padding:2rem 3.5rem 1.5rem;margin-bottom:2.5rem;position:relative;overflow:hidden;-webkit-overflow-scrolling:touch}
+.carousel-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform;-webkit-backface-visibility:hidden}
+.carousel-slide{min-width:100%;width:100%;flex-shrink:0;box-sizing:border-box}
 .slide-tag{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;display:flex;align-items:center;gap:6px}
 .slide-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
 .slide-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:1;letter-spacing:-1px;margin-bottom:.5rem}
@@ -190,8 +190,8 @@ footer{border-top:1px solid var(--border);padding:2rem;max-width:1100px;margin:0
 .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
 .reveal.visible{opacity:1;transform:none}
 
-@media(max-width:768px){.section-nav-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}nav .nav-links{display:none}.stat-carousel{padding:1.25rem 2.75rem 1.25rem}.slide-number{font-size:clamp(2rem,12vw,3.5rem)}.slide-desc{font-size:12px}.carousel-arrow{width:26px;height:26px;font-size:12px}.carousel-arrow.prev{left:4px}.carousel-arrow.next{right:4px}}
-@media(max-width:480px){.stat-grid{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}}
+@media(max-width:768px){.section-nav-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}nav .nav-links{display:none}.stat-carousel{padding:1rem 2.5rem 1rem}.slide-number{font-size:clamp(1.8rem,10vw,3rem)}.slide-tag{font-size:9px}.slide-desc{font-size:11px;line-height:1.5}.slide-source{font-size:9px}.carousel-arrow{width:24px;height:24px;font-size:11px}.carousel-arrow.prev{left:3px}.carousel-arrow.next{right:3px}.carousel-footer{margin-top:.75rem}}
+@media(max-width:480px){.stat-grid{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}.hero{padding:70px 1.25rem 3rem}.section{padding:3rem 1.25rem}.stat-carousel{padding:.9rem 2.25rem .9rem}}
 </style>
 
 
