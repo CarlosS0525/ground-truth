@@ -843,35 +843,57 @@ function closeMobile(){ if(mobileMenu) mobileMenu.classList.remove('open'); }
 
 
 <script>
-// Tooltip — hover to open, delay-close so cursor can move into tooltip
+// Tooltip — hover on desktop, tap on mobile
 document.querySelectorAll('.src-tag').forEach(function(tag) {
   var tip = tag.querySelector('.src-tooltip');
   var closeTimer = null;
+  var isTouch = false;
+
+  function closeAll() {
+    document.querySelectorAll('.src-tooltip.active').forEach(function(t){ t.classList.remove('active'); });
+  }
 
   function openTip() {
     clearTimeout(closeTimer);
-    // Close any other open tooltips
-    document.querySelectorAll('.src-tooltip.active').forEach(function(t){
-      if (t !== tip) t.classList.remove('active');
-    });
-    // Position left or right based on screen edge
+    closeAll();
     var rect = tag.getBoundingClientRect();
     tip.classList.toggle('right', rect.left > window.innerWidth * 0.55);
     tip.classList.add('active');
   }
 
-  function schedulClose() {
+  function scheduleClose() {
     closeTimer = setTimeout(function(){ tip.classList.remove('active'); }, 200);
   }
 
-  // Hover on icon — open
-  tag.addEventListener('mouseenter', openTip);
-  tag.addEventListener('mouseleave', schedulClose);
+  // Desktop hover
+  tag.addEventListener('mouseenter', function(){ if(!isTouch) openTip(); });
+  tag.addEventListener('mouseleave', function(){ if(!isTouch) scheduleClose(); });
+  tip.addEventListener('mouseenter', function(){ if(!isTouch) clearTimeout(closeTimer); });
+  tip.addEventListener('mouseleave', function(){ if(!isTouch) scheduleClose(); });
 
-  // Hover into tooltip — cancel close
-  tip.addEventListener('mouseenter', function(){ clearTimeout(closeTimer); });
-  tip.addEventListener('mouseleave', schedulClose);
+  // Mobile tap
+  tag.addEventListener('touchstart', function(e){
+    isTouch = true;
+    e.stopPropagation();
+    if(tip.classList.contains('active')){
+      tip.classList.remove('active');
+    } else {
+      openTip();
+    }
+  }, {passive:true});
 });
+
+// Close on scroll (mobile)
+window.addEventListener('scroll', function(){
+  document.querySelectorAll('.src-tooltip.active').forEach(function(t){ t.classList.remove('active'); });
+}, {passive:true});
+
+// Close on tap outside
+document.addEventListener('touchstart', function(e){
+  if(!e.target.closest('.src-tag')){
+    document.querySelectorAll('.src-tooltip.active').forEach(function(t){ t.classList.remove('active'); });
+  }
+}, {passive:true});
 </script>
 
 </body>
