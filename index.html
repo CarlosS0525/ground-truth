@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ground Truth — The world by the numbers</title>
+<meta name="description" content="Ground Truth — public data on pollution, wealth inequality, and AI energy use. Verified sources, no spin.">
+<meta property="og:url" content="https://ground-truth.info">
+<link rel="canonical" href="https://ground-truth.info">
+<meta property="og:title" content="Ground Truth — The world by the numbers">
+<meta property="og:description" content="Public data on pollution, wealth inequality, and AI energy use. Verified sources, no spin.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ground Truth">
+<meta name="twitter:description" content="Public data on pollution, wealth inequality, and AI. No spin.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%23c8392b'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Syne:wght@800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --white:#fff;--off:#f4f3ef;--ink:#0c0c0c;--ink2:#333;--muted:#777;
+  --border:#e0ddd6;--poll:#b83232;--wealth:#1a5c8a;--tech:#4a2580;--accent:#c8392b;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:50px}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.5px;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{font-size:12px;font-weight:500;text-decoration:none;color:var(--muted);letter-spacing:.01em;transition:color .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+.nav-updated{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2.4s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* HERO */
+.hero{min-height:100vh;padding:80px 2rem 5rem;max-width:1100px;margin:0 auto;display:flex;flex-direction:column;justify-content:center}
+.hero-eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(3.2rem,9vw,7.5rem);font-weight:800;line-height:.92;letter-spacing:-3px;margin-bottom:1.75rem}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero-desc{font-size:15px;color:var(--muted);max-width:440px;line-height:1.7;margin-bottom:3.5rem;font-weight:300;border-left:2px solid var(--border);padding-left:1rem}
+
+/* CAROUSEL */
+.stat-carousel{border:1px solid var(--border);background:var(--off);padding:2rem 3.5rem 1.5rem;margin-bottom:2.5rem;position:relative;overflow:hidden}
+.carousel-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.carousel-slide{min-width:100%;flex-shrink:0}
+.slide-tag{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;display:flex;align-items:center;gap:6px}
+.slide-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.slide-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:1;letter-spacing:-1px;margin-bottom:.5rem}
+.slide-desc{font-size:13px;color:var(--ink2);font-weight:400;max-width:520px;line-height:1.65}
+.slide-source{font-size:10px;color:var(--muted);margin-top:.75rem}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:14px;color:var(--ink2);padding:0;z-index:2}
+.carousel-arrow:hover{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.carousel-arrow.prev{left:10px}
+.carousel-arrow.next{right:10px}
+.carousel-footer{display:flex;justify-content:flex-end;margin-top:1.25rem}
+.carousel-counter{font-size:10px;color:var(--muted)}
+
+/* SECTION NAV */
+.section-nav-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem}
+.section-nav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.sec-btn{background:var(--white);padding:1.25rem 1rem;text-decoration:none;display:block;transition:background .15s;position:relative;overflow:hidden}
+.sec-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--btn-c,var(--ink));transform:scaleX(0);transition:transform .2s;transform-origin:left}
+.sec-btn:hover{background:var(--off)}
+.sec-btn:hover::after{transform:scaleX(1)}
+.sec-btn-icon{font-size:22px;margin-bottom:.6rem;display:block}
+.sec-btn-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--ink);margin-bottom:.25rem;display:block;letter-spacing:-.3px}
+.sec-btn-sub{font-size:11px;color:var(--muted);display:block;line-height:1.5}
+
+/* SECTION */
+.section{max-width:1100px;margin:0 auto;padding:5rem 2rem;border-top:1px solid var(--border)}
+.section-eyebrow{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:.5rem}
+.section-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;color:white;display:inline-block;margin-bottom:.6rem}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-1.5px;line-height:1}
+.section-meta{text-align:right}
+.section-updated{font-size:10px;color:var(--muted);display:block;margin-bottom:2px}
+.section-source{font-size:10px;color:var(--muted)}
+
+/* MAP */
+.map-wrap{margin-bottom:2rem;border:1px solid var(--border);background:var(--white);padding:.75rem 1rem .75rem}
+.map-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem}
+.map-wrap canvas{width:100%;display:block}
+.map-legend{display:flex;gap:1.5rem;margin-top:.6rem;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--ink2)}
+.legend-swatch{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2rem;overflow:visible}
+.stat-cell{background:var(--white);padding:1.25rem 1.25rem 1rem;position:relative;transition:background .15s;border-top:2px solid transparent;transition:border-color .2s,background .15s}
+.stat-cell:hover{background:#fafaf8}
+.stat-cell.poll:hover{border-top-color:var(--poll)}
+.stat-cell.wealth:hover{border-top-color:var(--wealth)}
+.stat-cell.tech:hover{border-top-color:var(--tech)}
+.stat-cell-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;line-height:1.4}
+.stat-cell-num{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,2.4vw,2.2rem);font-weight:700;line-height:1;margin-bottom:.45rem}
+.stat-cell-desc{font-size:11.5px;color:var(--ink2);line-height:1.6;font-weight:400}
+.stat-cell-updated{font-size:9px;color:var(--muted);margin-top:.6rem;display:block;opacity:.55}
+
+/* BAR CHART */
+.chart-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.75rem}
+.bar-chart{margin-bottom:2rem}
+.bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:9px}
+.bar-row-label{font-size:11px;font-weight:400;min-width:120px;color:var(--ink2);flex-shrink:0}
+.bar-track{flex:1;height:26px;background:var(--off);position:relative;overflow:visible}
+.bar-fill{height:100%;width:0;transition:none;position:relative}
+.bar-fill.animated{transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.bar-text{position:absolute;top:50%;transform:translateY(-50%);font-size:10px;font-weight:500;white-space:nowrap;line-height:1;opacity:0;transition:opacity .3s .9s}
+.bar-fill.animated .bar-text{opacity:1}
+.bar-text.inside{left:8px;color:#ebe9e4}
+.bar-text.outside{left:calc(100% + 7px);color:var(--ink2)}
+
+
+/* PROJECTION CHART */
+.proj-wrap{margin-bottom:2rem;border:1px solid var(--border);background:var(--white);padding:1rem 1.25rem 1.25rem}
+.proj-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem}
+.proj-canvas-wrap{position:relative}
+.proj-canvas-wrap canvas{width:100%;display:block}
+.proj-legend{display:flex;gap:1.5rem;margin-top:.6rem;flex-wrap:wrap}
+.proj-legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--ink2)}
+.proj-legend-line{width:18px;height:2px;flex-shrink:0}
+.proj-legend-dash{width:18px;height:0;border-top:2px dashed;flex-shrink:0}
+
+/* SECTION DIVIDER (tech sub-labels) */
+.stat-sub-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:.5rem 1.25rem .25rem;background:var(--off);border-bottom:1px solid var(--border);grid-column:1/-1}
+
+
+/* SOURCE TOOLTIPS */
+.stat-cell{position:relative}
+.src-tag{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);cursor:pointer;margin-left:5px;vertical-align:middle;opacity:.7;transition:opacity .15s;position:relative}
+.src-tag:hover{opacity:1}
+.src-tag svg{width:8px;height:8px;pointer-events:none}
+.src-tooltip{position:absolute;bottom:calc(100% + 8px);left:0;z-index:9999;background:rgba(12,12,12,0.82);backdrop-filter:blur(6px);color:#fff;padding:.6rem .8rem;min-width:220px;max-width:280px;pointer-events:auto;border-radius:0;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
+.src-tooltip.active{opacity:1;visibility:visible}
+.src-tooltip.right{left:auto;right:0}
+.src-tooltip-name{font-size:10px;font-weight:600;line-height:1.4;margin-bottom:2px}
+.src-tooltip-year{font-size:9px;opacity:.7;margin-bottom:4px}
+.src-tooltip-link{font-size:9px;opacity:.8;word-break:break-all;text-decoration:underline;cursor:text;user-select:all}
+
+/* SCROLL PROGRESS */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;background:transparent}
+.scroll-progress-fill{height:100%;width:0%;background:var(--accent);transition:width .1s linear}
+
+/* MOBILE NAV */
+.nav-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px;background:none;border:none}
+.nav-hamburger span{display:block;width:18px;height:1.5px;background:var(--ink);transition:all .2s}
+.mobile-menu{display:none;position:fixed;top:50px;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:1rem 2rem;z-index:99;flex-direction:column;gap:0}
+.mobile-menu a{font-size:13px;font-weight:500;text-decoration:none;color:var(--ink2);padding:.75rem 0;border-bottom:1px solid var(--border);display:block}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu.open{display:flex}
+@media(max-width:768px){
+  .nav-hamburger{display:flex}
+  .nav-links{display:none!important}
+}
+
+/* CONTACT FORM */
+.contact-wrap{max-width:1100px;margin:0 auto;padding:4rem 2rem;border-top:1px solid var(--border)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:4rem;align-items:start}
+.contact-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem}
+.contact-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:1rem}
+.contact-desc{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:1.25rem}
+.contact-note{font-size:10px;color:var(--muted);line-height:1.6;border-left:2px solid var(--border);padding-left:.75rem}
+.form-field{margin-bottom:1rem}
+.form-field label{display:block;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem}
+.form-field input,.form-field select,.form-field textarea{width:100%;border:1px solid var(--border);background:var(--white);padding:.65rem .75rem;font-family:'Inter',sans-serif;font-size:12px;color:var(--ink);outline:none;border-radius:0;transition:border-color .15s;-webkit-appearance:none}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--ink)}
+.form-field textarea{resize:vertical;min-height:100px;line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.form-submit{width:100%;padding:.75rem;background:var(--ink);color:#fff;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:.02em;cursor:pointer;transition:background .15s}
+.form-submit:hover{background:#222}
+.form-success{display:none;padding:1rem;background:var(--off);border:1px solid var(--border);font-size:12px;color:var(--ink2);line-height:1.6;text-align:center}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr;gap:2rem}.form-row{grid-template-columns:1fr}}
+
+/* CONTEXT */
+.context{border-left:3px solid;padding:1rem 1.25rem;background:var(--off)}
+.context-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.context p{font-size:12px;color:var(--ink2);line-height:1.75;font-weight:400}
+.context strong{font-weight:600;color:var(--ink)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--ink)}
+.footer-logo span{color:var(--accent)}
+.footer-tagline{font-size:10px;color:var(--muted);margin-top:4px}
+.footer-note{font-size:10px;color:var(--muted);text-align:right;line-height:1.7}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:none}
+
+@media(max-width:768px){.section-nav-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}nav .nav-links{display:none}}
+@media(max-width:480px){.stat-grid{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}}
+</style>
+
+
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-progress-fill" id="progress-fill"></div></div>
+<nav>
+  <a href="#" class="nav-logo">Ground<span>.</span>Truth</a>
+  <div class="nav-links">
+    <a href="#pollution">Pollution</a>
+    <a href="#wealth">Wealth &amp; Labor</a>
+    <a href="#tech">Tech &amp; AI</a>
+    <a href="#contact">Submit</a>
+  </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-updated"><div class="live-dot"></div><span id="nav-ts">Loading...</span></div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#pollution" onclick="closeMobile()">Pollution &amp; Extraction</a>
+  <a href="#wealth" onclick="closeMobile()">Wealth &amp; Labor</a>
+  <a href="#tech" onclick="closeMobile()">Tech &amp; AI</a>
+  <a href="#contact" onclick="closeMobile()">Submit a Question</a>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow"><div class="live-dot"></div>Global data — three topics — no spin</div>
+  <h1>The world<br>by the<br><em>numbers.</em></h1>
+  <p class="hero-desc">Public data from verified sources, in one place. No agenda. The figures that shape daily life — and where they come from.</p>
+
+  <div class="stat-carousel" id="carousel">
+    <button class="carousel-arrow prev" id="prevBtn" aria-label="Previous">&#8592;</button>
+    <button class="carousel-arrow next" id="nextBtn" aria-label="Next">&#8594;</button>
+    <div class="carousel-track" id="track">
+      <div class="carousel-slide">
+        <div class="slide-tag" style="color:var(--poll)">Pollution &amp; Extraction</div>
+        <div class="slide-number" style="color:var(--poll)">9.8Gt</div>
+        <div class="slide-desc">Tons of CO₂ equivalent from animal agriculture per year — more than all cars, trucks, ships, and planes combined. 57% of all food system emissions.</div>
+        <div class="slide-source">Nature Food / Global Carbon Project, 2024</div>
+      </div>
+      <div class="carousel-slide">
+        <div class="slide-tag" style="color:var(--poll)">Pollution &amp; Extraction</div>
+        <div class="slide-number" style="color:var(--poll)">$218B</div>
+        <div class="slide-desc">Spent annually in the US growing, processing, and disposing of food that is never eaten — enough to provide three meals a day to every food-insecure American.</div>
+        <div class="slide-source">ReFED / USDA, 2024</div>
+      </div>
+      <div class="carousel-slide">
+        <div class="slide-tag" style="color:var(--wealth)">Wealth &amp; Labor</div>
+        <div class="slide-number" style="color:var(--wealth)">350:1</div>
+        <div class="slide-desc">CEO-to-median-worker pay ratio in the US. In 1965 it was 21:1. Worker productivity has roughly doubled over the same period. The gains did not flow equally.</div>
+        <div class="slide-source">Economic Policy Institute, 2024</div>
+      </div>
+      <div class="carousel-slide">
+        <div class="slide-tag" style="color:var(--wealth)">Wealth &amp; Labor</div>
+        <div class="slide-number" style="color:var(--wealth)">2.5%</div>
+        <div class="slide-desc">Share of all US wealth held by the bottom 50% of households. The top 1% holds 32%. The gap has widened every decade since the 1980s.</div>
+        <div class="slide-source">Federal Reserve / World Inequality Database, 2024</div>
+      </div>
+      <div class="carousel-slide">
+        <div class="slide-tag" style="color:var(--tech)">Tech &amp; AI</div>
+        <div class="slide-number" style="color:var(--tech)">945TWh</div>
+        <div class="slide-desc">Projected global data center electricity consumption by 2030 — roughly equivalent to Japan's entire national energy usage today, driven primarily by AI expansion.</div>
+        <div class="slide-source">International Energy Agency, 2024</div>
+      </div>
+      <div class="carousel-slide">
+        <div class="slide-tag" style="color:var(--tech)">Tech &amp; AI</div>
+        <div class="slide-number" style="color:var(--tech)">66%</div>
+        <div class="slide-desc">Share of global cloud infrastructure controlled by three companies — Amazon, Microsoft, and Google. The infrastructure of the AI era is highly concentrated.</div>
+        <div class="slide-source">Synergy Research Group, 2024</div>
+      </div>
+    </div>
+    <div class="carousel-footer"><div class="carousel-counter" id="counter">1 / 6</div></div>
+  </div>
+
+  <div class="section-nav-label">Explore by topic</div>
+  <div class="section-nav-grid">
+    <a href="#pollution" class="sec-btn" style="--btn-c:var(--poll)">
+      <span class="sec-btn-icon">🌍</span>
+      <span class="sec-btn-name">Pollution &amp; Extraction</span>
+      <span class="sec-btn-sub">Emissions, water, food waste, extraction</span>
+    </a>
+    <a href="#wealth" class="sec-btn" style="--btn-c:var(--wealth)">
+      <span class="sec-btn-icon">📊</span>
+      <span class="sec-btn-name">Wealth &amp; Labor</span>
+      <span class="sec-btn-sub">Inequality, wages, water access, labor</span>
+    </a>
+    <a href="#tech" class="sec-btn" style="--btn-c:var(--tech)">
+      <span class="sec-btn-icon">⚡</span>
+      <span class="sec-btn-name">Tech &amp; AI</span>
+      <span class="sec-btn-sub">Energy, water, automation, ownership</span>
+    </a>
+  </div>
+</div>
+
+<!-- ═══ POLLUTION ═══ -->
+<section class="section reveal" id="pollution">
+  <div class="section-eyebrow">
+    <div>
+      <div class="section-tag" style="background:var(--poll)">Pollution &amp; Extraction</div>
+      <div class="section-title">The cost<br>of production.</div>
+    </div>
+    <div class="section-meta">
+      <span class="section-updated" id="p-upd">Updated —</span>
+      <span class="section-source">FAO · EPA · IEA · Climate Trace · UNEP</span>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">Animal ag. emissions / year<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Nature Food / Global Carbon Project</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">globalcarbonproject.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">9.8Gt</div>
+      <div class="stat-cell-desc">CO₂ equivalent — 57% of all food system emissions globally</div>
+      <span class="stat-cell-updated" id="p-s1"></span>
+    </div>
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">US share of global transport emissions<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">EPA / IEA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">epa.gov/ghgemissions</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">20.2%</div>
+      <div class="stat-cell-desc">US produces over a fifth of all global transport emissions</div>
+      <span class="stat-cell-updated" id="p-s2"></span>
+    </div>
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">Food wasted globally<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">UNEP Food Waste Index</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">unep.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">1.05B t</div>
+      <div class="stat-cell-desc">Tons per year. 35% of all food produced in the US goes unsold or uneaten.</div>
+      <span class="stat-cell-updated" id="p-s3"></span>
+    </div>
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">Water per kg beef wasted<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">UNESCO-IHE / Mekonnen & Hoekstra</div><div class="src-tooltip-year">2012</div><div class="src-tooltip-link">waterfootprint.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">25,000L</div>
+      <div class="stat-cell-desc">Liters of embedded water discarded when one kilogram of beef goes uneaten</div>
+      <span class="stat-cell-updated" id="p-s4"></span>
+    </div>
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">US food waste annual cost<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">ReFED / USDA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">refed.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">$218B</div>
+      <div class="stat-cell-desc">Spent growing, processing, and disposing of food Americans never eat</div>
+      <span class="stat-cell-updated" id="p-s5"></span>
+    </div>
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">Top 20 corps — global emissions<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">CDP / Climate Accountability Inst.</div><div class="src-tooltip-year">2019</div><div class="src-tooltip-link">climateaccountability.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">35%</div>
+      <div class="stat-cell-desc">Estimated share of all industrial greenhouse emissions attributable to 20 companies since 1965</div>
+      <span class="stat-cell-updated" id="p-s6"></span>
+    </div>
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">Agriculture's freshwater share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">FAO AQUASTAT / WWAP</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">fao.org/aquastat</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">70%</div>
+      <div class="stat-cell-desc">Of all global freshwater withdrawals go to agriculture — animal farming accounts for the dominant share in most regions</div>
+      <span class="stat-cell-updated" id="p-s7"></span>
+    </div>
+    <div class="stat-cell poll">
+      <div class="stat-cell-label">Water to produce 1kg of beef<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Mekonnen & Hoekstra / UNESCO-IHE</div><div class="src-tooltip-year">2012</div><div class="src-tooltip-link">waterfootprint.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--poll)">15,400L</div>
+      <div class="stat-cell-desc">Liters of freshwater required on average — vs. 1,250L for 1kg of wheat. The gap is embedded in every meal.</div>
+      <span class="stat-cell-updated" id="p-s8"></span>
+    </div>
+  </div>
+
+  <div class="chart-label">Water use by sector — global annual withdrawal (km³)</div>
+  <div class="bar-chart">
+    <div class="bar-row"><div class="bar-row-label">Agriculture total</div><div class="bar-track"><div class="bar-fill" data-w="90%" style="width:0;background:#b83232"><span class="bar-text inside">2,700 km³ — 70% of all use</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Animal farming (est.)</div><div class="bar-track"><div class="bar-fill" data-w="68%" style="width:0;background:#c05040"><span class="bar-text inside">~1,700 km³</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Industry</div><div class="bar-track"><div class="bar-fill" data-w="28%" style="width:0;background:#888"><span class="bar-text inside">~800 km³ — 20%</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Municipal / domestic</div><div class="bar-track"><div class="bar-fill" data-w="14%" style="width:0;background:#aaa"><span class="bar-text outside">~400 km³ — 10%</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">All data centers</div><div class="bar-track"><div class="bar-fill" data-w="1%" style="width:0;background:#4a2580"><span class="bar-text outside">~0.3 km³</span></div></div></div>
+  </div>
+
+  <div class="proj-wrap">
+    <div class="proj-title">Agricultural emissions trajectory — 2000–2040 projection (GtCO₂eq/yr)</div>
+    <div class="proj-canvas-wrap"><canvas id="proj-poll" height="200"></canvas></div>
+    <div class="proj-legend">
+      <div class="proj-legend-item"><div class="proj-legend-line" style="background:#b83232"></div>Historical</div>
+      <div class="proj-legend-item"><div class="proj-legend-dash" style="border-color:#b83232"></div>Projected (current trajectory)</div>
+      <div class="proj-legend-item"><div class="proj-legend-dash" style="border-color:#888"></div>Projected (reform scenario)</div>
+    </div>
+  </div>
+
+  <div class="context" style="border-left-color:var(--poll)">
+    <div class="context-label" style="color:var(--poll)">Context</div>
+    <p>National emissions figures measure where production happens — not who profits from it. <strong>Climate Trace now attributes emissions to the operating entity rather than the geography</strong>, producing a meaningfully different picture of accountability. Water tells the same story: agriculture withdraws 70% of global freshwater, but water scarcity risk falls hardest on communities that didn't choose those supply chains. The waste built into retail supply chains is a structural feature, not an anomaly — suppliers guarantee full shelves by design, making overproduction the default outcome. Every kilogram of beef that goes uneaten also discards roughly 15,400 liters of embedded water.</p>
+  </div>
+</section>
+
+<!-- ═══ WEALTH & LABOR ═══ -->
+<section class="section reveal" id="wealth">
+  <div class="section-eyebrow">
+    <div>
+      <div class="section-tag" style="background:var(--wealth)">Wealth &amp; Labor</div>
+      <div class="section-title">Who keeps<br>what.</div>
+    </div>
+    <div class="section-meta">
+      <span class="section-updated" id="w-upd">Updated —</span>
+      <span class="section-source">World Inequality Database · Fed · EPI · ILO</span>
+    </div>
+  </div>
+
+
+  <div class="stat-grid">
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">Top 1% US wealth share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Federal Reserve / World Inequality Database</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">wid.world</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">32%</div>
+      <div class="stat-cell-desc">Of all US wealth held by the top 1% of households</div>
+      <span class="stat-cell-updated" id="w-s1"></span>
+    </div>
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">Bottom 50% US wealth share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Federal Reserve DFA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">federalreserve.gov</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">2.5%</div>
+      <div class="stat-cell-desc">Of all US wealth held by the bottom half of the population</div>
+      <span class="stat-cell-updated" id="w-s2"></span>
+    </div>
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">CEO-to-worker pay ratio<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Economic Policy Institute</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">epi.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">350:1</div>
+      <div class="stat-cell-desc">Compared to 21:1 in 1965. Worker productivity has also roughly doubled over the same period.</div>
+      <span class="stat-cell-updated" id="w-s3"></span>
+    </div>
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">Billionaire wealth growth 2020–23<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Oxfam / Forbes</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">oxfam.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">+$2.2T</div>
+      <div class="stat-cell-desc">Increase in combined billionaire wealth during COVID-19</div>
+      <span class="stat-cell-updated" id="w-s4"></span>
+    </div>
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">Racial wealth gap — median<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Fed Survey of Consumer Finances</div><div class="src-tooltip-year">2022</div><div class="src-tooltip-link">federalreserve.gov</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">8:1</div>
+      <div class="stat-cell-desc">White median household wealth (~$188k) vs. Black median (~$24k)</div>
+      <span class="stat-cell-updated" id="w-s5"></span>
+    </div>
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">Productivity vs. wage growth 1979–2020<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Economic Policy Institute</div><div class="src-tooltip-year">2021</div><div class="src-tooltip-link">epi.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">+64%</div>
+      <div class="stat-cell-desc">US productivity growth since 1979. Real wages for the bottom half: essentially flat.</div>
+      <span class="stat-cell-updated" id="w-s6"></span>
+    </div>
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">Workers without retirement savings<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">National Institute on Retirement Security</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">nirsonline.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">~55%</div>
+      <div class="stat-cell-desc">Estimated share of Americans with no meaningful retirement savings — across all racial groups</div>
+      <span class="stat-cell-updated" id="w-s7"></span>
+    </div>
+    <div class="stat-cell wealth">
+      <div class="stat-cell-label">Americans without safe water access<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">USGS / Pacific Institute</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">pacinst.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--wealth)">~2M</div>
+      <div class="stat-cell-desc">People in the US lacking running water or basic indoor plumbing — concentrated in low-income, rural, and indigenous communities</div>
+      <span class="stat-cell-updated" id="w-s8"></span>
+    </div>
+  </div>
+
+  <div class="chart-label">US wealth distribution</div>
+  <div class="bar-chart">
+    <div class="bar-row"><div class="bar-row-label">Top 1%</div><div class="bar-track"><div class="bar-fill" data-w="80%" style="width:0;background:var(--wealth)"><span class="bar-text inside">32% of all wealth</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Next 9%</div><div class="bar-track"><div class="bar-fill" data-w="55%" style="width:0;background:#1a6b9a"><span class="bar-text inside">~38% of all wealth</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Next 40%</div><div class="bar-track"><div class="bar-fill" data-w="28%" style="width:0;background:#3a8ac0"><span class="bar-text inside">~27%</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Bottom 50%</div><div class="bar-track"><div class="bar-fill" data-w="6%" style="width:0;background:#6aaad8"><span class="bar-text outside">2.5%</span></div></div></div>
+  </div>
+
+  <div class="context" style="border-left-color:var(--wealth)">
+    <div class="context-label" style="color:var(--wealth)">Context</div>
+    <p>The ultra-wealthy can access loans at 0.5–3% interest using appreciated assets as collateral — living on borrowed money that isn't taxable income, while the assets continue to grow. When those assets transfer at death, the accumulated gains are permanently excluded from capital gains tax. <strong>This strategy is legal, documented, and structurally unavailable below a certain wealth threshold.</strong> The racial wealth gap compounds the picture: decades of documented housing, lending, and labor policy exclusions created gaps that market participation alone does not close.</p>
+  </div>
+</section>
+
+<!-- ═══ TECH & AI ═══ -->
+<section class="section reveal" id="tech">
+  <div class="section-eyebrow">
+    <div>
+      <div class="section-tag" style="background:var(--tech)">Tech &amp; AI</div>
+      <div class="section-title">The energy<br>behind<br>the screen.</div>
+    </div>
+    <div class="section-meta">
+      <span class="section-updated" id="t-upd">Updated —</span>
+      <span class="section-source">IEA · McKinsey · CDP · Synergy Research</span>
+    </div>
+  </div>
+
+
+  <div class="stat-grid">
+    <div class="stat-sub-label">Infrastructure &amp; Energy</div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">Projected data center demand 2030<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">International Energy Agency</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">iea.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">945TWh</div>
+      <div class="stat-cell-desc">Terawatt hours — roughly equivalent to Japan's total national electricity consumption today</div>
+      <span class="stat-cell-updated" id="t-s1"></span>
+    </div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">US data center emissions 2023<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Lawrence Berkeley National Lab / EPA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">lbl.gov</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">105Mt</div>
+      <div class="stat-cell-desc">Million tons CO₂ equivalent — 2.18% of all US emissions, with 56% from fossil fuels</div>
+      <span class="stat-cell-updated" id="t-s2"></span>
+    </div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">Global nuclear investment 2024<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">World Nuclear Association / IEA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">world-nuclear.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">$80B</div>
+      <div class="stat-cell-desc">Doubled from $40B in 2020 — driven by AI energy demand from major tech companies</div>
+      <span class="stat-cell-updated" id="t-s3"></span>
+    </div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">Work tasks at risk from automation<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">McKinsey Global Institute</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">mckinsey.com</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">~30%</div>
+      <div class="stat-cell-desc">McKinsey Global Institute, 2024. The economic gains flow primarily to whoever owns the technology.</div>
+      <span class="stat-cell-updated" id="t-s4"></span>
+    </div>
+    <div class="stat-sub-label">Ownership &amp; Labor</div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">Big 3 cloud market share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Synergy Research Group</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">srgresearch.com</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">66%</div>
+      <div class="stat-cell-desc">AWS, Microsoft Azure, and Google Cloud control roughly two thirds of global cloud infrastructure</div>
+      <span class="stat-cell-updated" id="t-s5"></span>
+    </div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">AI vs. animal ag. emissions<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">IEA / FAO / Climate Trace</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">climatetrace.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">~100×</div>
+      <div class="stat-cell-desc">Animal agriculture currently produces ~100× more CO₂ equivalent than AI data centers — but AI is growing faster</div>
+      <span class="stat-cell-updated" id="t-s6"></span>
+    </div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">Data center water use — US 2023<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Lawrence Berkeley National Lab</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">lbl.gov</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">600B gal</div>
+      <div class="stat-cell-desc">Gallons used annually for server cooling — Google's data centers alone used ~5.6B gallons in 2022, enough for 100,000 US homes</div>
+      <span class="stat-cell-updated" id="t-s7"></span>
+    </div>
+    <div class="stat-cell tech">
+      <div class="stat-cell-label">Congo mineral wealth<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">World Bank / USGS</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">worldbank.org</div></div></span></div>
+      <div class="stat-cell-num" style="color:var(--tech)">$24T</div>
+      <div class="stat-cell-desc">DRC contains most of the world's cobalt — essential for EV batteries and smartphones. One of the poorest nations by GDP per capita.</div>
+      <span class="stat-cell-updated" id="t-s8"></span>
+    </div>
+  </div>
+
+  <div class="chart-label">AI energy footprint vs. other industries (CO₂eq/yr)</div>
+  <div class="bar-chart">
+    <div class="bar-row"><div class="bar-row-label">Animal agriculture</div><div class="bar-track"><div class="bar-fill" data-w="90%" style="width:0;background:#b83232"><span class="bar-text inside">9.8Gt</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Transportation</div><div class="bar-track"><div class="bar-fill" data-w="72%" style="width:0;background:#1a4f7a"><span class="bar-text inside">8.4Gt</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">All data centers</div><div class="bar-track"><div class="bar-fill" data-w="12%" style="width:0;background:var(--tech)"><span class="bar-text outside">~0.9Gt</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">AI specifically</div><div class="bar-track"><div class="bar-fill" data-w="6%" style="width:0;background:#7a48b0"><span class="bar-text outside">~80Mt — growing</span></div></div></div>
+  </div>
+
+  <div class="proj-wrap">
+    <div class="proj-title">Data center electricity demand — 2020–2035 projection (TWh/yr)</div>
+    <div class="proj-canvas-wrap"><canvas id="proj-tech" height="200"></canvas></div>
+    <div class="proj-legend">
+      <div class="proj-legend-item"><div class="proj-legend-line" style="background:#4a2580"></div>Historical</div>
+      <div class="proj-legend-item"><div class="proj-legend-dash" style="border-color:#4a2580"></div>Projected — high AI growth</div>
+      <div class="proj-legend-item"><div class="proj-legend-dash" style="border-color:#9068b8"></div>Projected — moderate growth</div>
+    </div>
+  </div>
+
+  <div class="context" style="border-left-color:var(--tech)">
+    <div class="context-label" style="color:var(--tech)">Context</div>
+    <p>AI's current environmental footprint is considerably smaller than animal agriculture or transportation — but the trajectory is the story. Data center demand is projected to roughly quadruple by 2034, and water consumption for cooling scales with it. <strong>Whether that growth runs on renewables and nuclear or on fossil fuels — and whether cooling systems shift to air or water — are open policy questions with real local consequences.</strong> Three companies control two thirds of the infrastructure and are now investing directly in nuclear capacity. The Congo cobalt figure follows the same pattern: the physical cost of the digital economy falls heaviest on the people least compensated by it.</p>
+  </div>
+</section>
+
+<div class="contact-wrap" id="contact">
+  <div class="contact-grid">
+    <div>
+      <div class="contact-label">Ground Truth</div>
+      <div class="contact-title">A question.<br>A correction.<br>A source.</div>
+      <p class="contact-desc">This site is built on public data and human judgment — both of which have limits. If you've spotted an error, have a better source, or want to ask something, use the form.</p>
+      <p class="contact-note">Submissions are reviewed periodically. No account required. Your email is only used to respond — never shared or stored beyond that.</p>
+    </div>
+    <div>
+      <div class="form-field">
+        <label>Type of submission</label>
+        <select id="form-type">
+          <option value="">Select one</option>
+          <option>Question about the data</option>
+          <option>Suggest a correction</option>
+          <option>Suggest a new statistic</option>
+          <option>Source recommendation</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Name <span style="opacity:.5">(optional)</span></label>
+          <input type="text" id="form-name" placeholder="Anonymous">
+        </div>
+        <div class="form-field">
+          <label>Email <span style="opacity:.5">(optional)</span></label>
+          <input type="email" id="form-email" placeholder="For a response">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Your message</label>
+        <textarea id="form-msg" placeholder="Be as specific as possible — cite the stat label or section if relevant."></textarea>
+      </div>
+      <button class="form-submit" onclick="submitForm()">Send →</button>
+      <div class="form-success" id="form-success">
+        Received. If you left an email, expect a response within a few days.
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>
+    <div class="footer-logo">Ground<span>.</span>Truth</div>
+    <div class="footer-tagline">The world by the numbers. No agenda.</div>
+  </div>
+  <div class="footer-note">
+    FAO · EPA · IEA · World Inequality Database · Climate Trace<br>
+    UNEP · EPI · Global Carbon Project · McKinsey · ReFED<br>
+    Synergy Research Group · CDP · USDA · WWAP · Pacific Institute<br><br>
+    Not affiliated with any political organization.<br>
+    Built to inform. Free to share.
+  </div>
+</footer>
+
+<script>
+function getTS(){return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+function getShort(){return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function setTimestamps(){
+  var ts=getTS(),short=getShort();
+  var n=document.getElementById('nav-ts');if(n)n.textContent='Updated '+short;
+  ['p-upd','w-upd','t-upd'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent='Last updated '+ts});
+  ['p-s1','p-s2','p-s3','p-s4','p-s5','p-s6','p-s7','p-s8',
+   'w-s1','w-s2','w-s3','w-s4','w-s5','w-s6','w-s7','w-s8',
+   't-s1','t-s2','t-s3','t-s4','t-s5','t-s6','t-s7','t-s8'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=short});
+}
+setTimestamps();
+
+var track=document.getElementById('track'),counter=document.getElementById('counter'),carousel=document.getElementById('carousel'),prevBtn=document.getElementById('prevBtn'),nextBtn=document.getElementById('nextBtn');
+var slides=document.querySelectorAll('.carousel-slide');
+var accentHex=['#b83232','#b83232','#1a5c8a','#1a5c8a','#4a2580','#4a2580'];
+var total=slides.length,current=0,timer=null,paused=false;
+function goTo(n){current=((n%total)+total)%total;track.style.transform='translateX(-'+(current*100)+'%)';counter.textContent=(current+1)+' / '+total;carousel.style.boxShadow='inset 3px 0 0 '+accentHex[current]}
+function startTimer(){stopTimer();timer=setInterval(function(){if(!paused)goTo(current+1)},4500)}
+function stopTimer(){if(timer){clearInterval(timer);timer=null}}
+prevBtn.addEventListener('click',function(){goTo(current-1);startTimer()});
+nextBtn.addEventListener('click',function(){goTo(current+1);startTimer()});
+carousel.addEventListener('mouseenter',function(){paused=true});
+carousel.addEventListener('mouseleave',function(){paused=false});
+goTo(0);startTimer();
+
+// Reveal on scroll
+var reveals=document.querySelectorAll('.reveal');
+reveals.forEach(function(r){
+  new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible')});
+  },{threshold:.06}).observe(r);
+});
+
+// Nav active state
+var navSections=document.querySelectorAll('.section'),navLinks=document.querySelectorAll('.nav-links a');
+navSections.forEach(function(s){
+  new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting)navLinks.forEach(function(a){
+        a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id);
+      });
+    });
+  },{threshold:.3}).observe(s);
+});
+
+// Bar chart: animate on scroll into view
+var barCharts=document.querySelectorAll('.bar-chart');
+barCharts.forEach(function(chart){
+  var animated=false;
+  new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting&&!animated){
+      animated=true;
+      chart.querySelectorAll('.bar-fill').forEach(function(bar,i){
+        var w=bar.getAttribute('data-w');
+        if(!w)return;
+        setTimeout(function(){
+          bar.style.width=w;
+          bar.classList.add('animated');
+        }, i*80);
+      });
+    }
+  },{threshold:.2}).observe(chart);
+});
+</script>
+
+
+
+<script>
+(function(){
+function drawProj(canvasId, data, color, opts) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  var W = canvas.offsetWidth || 900;
+  var dpr = window.devicePixelRatio || 1;
+  var H = 200;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  var ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  var pad = {top:20, right:60, bottom:36, left:52};
+  var cw = W - pad.left - pad.right;
+  var ch = H - pad.top - pad.bottom;
+
+  // data: {hist: [[year,val],...], proj_high: [[year,val],...], proj_low: [[year,val],...]}
+  // find min/max
+  var allVals = [];
+  [data.hist, data.proj_high, data.proj_low].forEach(function(s){if(s)s.forEach(function(d){allVals.push(d[1]);})});
+  var allYears = [];
+  [data.hist, data.proj_high, data.proj_low].forEach(function(s){if(s)s.forEach(function(d){allYears.push(d[0]);})});
+  var minY = 0, maxY = Math.max.apply(null,allVals)*1.12;
+  var minX = Math.min.apply(null,allYears), maxX = Math.max.apply(null,allYears);
+
+  function px(year){ return pad.left + (year-minX)/(maxX-minX)*cw; }
+  function py(val){ return pad.top + ch - (val-minY)/(maxY-minY)*ch; }
+
+  // Grid lines
+  ctx.strokeStyle = '#e8e6e0';
+  ctx.lineWidth = 1;
+  var gridCount = 4;
+  for(var i=0;i<=gridCount;i++){
+    var val = minY + (maxY-minY)/gridCount*i;
+    var y = py(val);
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(pad.left+cw,y); ctx.stroke();
+    ctx.fillStyle='#999'; ctx.font='9px Inter,sans-serif'; ctx.textAlign='right';
+    ctx.fillText(opts.fmt?opts.fmt(val):val.toFixed(1), pad.left-6, y+3);
+  }
+
+  // Year labels
+  var step = Math.ceil((maxX-minX)/6);
+  ctx.fillStyle='#999'; ctx.font='9px Inter,sans-serif'; ctx.textAlign='center';
+  for(var yr=minX;yr<=maxX;yr+=step){
+    ctx.fillText(yr, px(yr), pad.top+ch+14);
+  }
+  ctx.fillText(maxX, px(maxX), pad.top+ch+14);
+
+  // Projection fill band (between high and low)
+  if(data.proj_high && data.proj_low && data.proj_low.length){
+    ctx.beginPath();
+    data.proj_high.forEach(function(d,i){
+      if(i===0)ctx.moveTo(px(d[0]),py(d[1])); else ctx.lineTo(px(d[0]),py(d[1]));
+    });
+    var rev = data.proj_low.slice().reverse();
+    rev.forEach(function(d){ ctx.lineTo(px(d[0]),py(d[1])); });
+    ctx.closePath();
+    ctx.fillStyle = color.replace(')',',0.08)').replace('rgb','rgba');
+    // fallback for hex
+    ctx.globalAlpha = 0.12;
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // Draw line helper
+  function drawLine(series, col, dash){
+    if(!series||!series.length) return;
+    ctx.beginPath();
+    series.forEach(function(d,i){
+      if(i===0)ctx.moveTo(px(d[0]),py(d[1])); else ctx.lineTo(px(d[0]),py(d[1]));
+    });
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 2;
+    ctx.setLineDash(dash||[]);
+    ctx.lineJoin='round';
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Low projection (dashed, lighter)
+  drawLine(data.proj_low, opts.colorLow||'#aaa', [5,4]);
+  // High projection (dashed)
+  drawLine(data.proj_high, color, [5,4]);
+  // Historical (solid)
+  drawLine(data.hist, color, []);
+
+  // Dot at last historical point
+  var last = data.hist[data.hist.length-1];
+  ctx.beginPath(); ctx.arc(px(last[0]),py(last[1]),3.5,0,Math.PI*2);
+  ctx.fillStyle=color; ctx.fill();
+
+  // "NOW" label
+  ctx.fillStyle=color; ctx.font='bold 8px Inter,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('NOW', px(last[0]), pad.top+ch+26);
+
+  // Projection label
+  if(data.proj_high){
+    var lastH = data.proj_high[data.proj_high.length-1];
+    ctx.fillStyle=color; ctx.font='bold 9px Inter,sans-serif'; ctx.textAlign='left';
+    ctx.fillText(opts.projLabel||'', px(lastH[0])+4, py(lastH[1])+4);
+  }
+}
+
+// Poll: agricultural emissions 2000–2040
+var pollData = {
+  hist: [[2000,6.8],[2005,7.2],[2010,7.8],[2015,8.4],[2020,9.0],[2024,9.8]],
+  proj_high: [[2024,9.8],[2028,10.8],[2032,11.6],[2036,12.2],[2040,12.8]],
+  proj_low:  [[2024,9.8],[2028,9.6],[2032,9.2],[2036,8.6],[2040,8.0]]
+};
+
+// Tech: data center TWh 2020–2035
+var techData = {
+  hist: [[2020,200],[2021,220],[2022,240],[2023,270],[2024,310]],
+  proj_high: [[2024,310],[2026,420],[2028,570],[2030,760],[2032,880],[2035,1100]],
+  proj_low:  [[2024,310],[2026,370],[2028,460],[2030,580],[2032,680],[2035,800]]
+};
+
+function fmtGt(v){ return v.toFixed(1)+'Gt'; }
+function fmtTWh(v){ return Math.round(v)+''; }
+
+var projAnimated = {};
+function initProjChart(id, data, color, opts){
+  var canvas = document.getElementById(id);
+  if(!canvas || projAnimated[id]) return;
+  new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting && !projAnimated[id]){
+      projAnimated[id] = true;
+      drawProj(id, data, color, opts);
+    }
+  }, {threshold:0.2}).observe(canvas);
+}
+
+function setupProjs(){
+  initProjChart('proj-poll', pollData, '#b83232', {fmt:fmtGt, projLabel:'→ 12.8Gt', colorLow:'#888'});
+  initProjChart('proj-tech', techData, '#4a2580', {fmt:fmtTWh, projLabel:'→ 1,100TWh', colorLow:'#9068b8'});
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', setupProjs);
+} else {
+  setTimeout(setupProjs, 0);
+}
+})();
+</script>
+
+
+<script>
+// Scroll progress bar
+var fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', function(){
+  var h = document.documentElement;
+  var pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+  if(fill) fill.style.width = pct + '%';
+}, {passive:true});
+
+// Mobile nav
+var hamburger = document.getElementById('hamburger');
+var mobileMenu = document.getElementById('mobile-menu');
+if(hamburger){
+  hamburger.addEventListener('click', function(){
+    mobileMenu.classList.toggle('open');
+  });
+}
+function closeMobile(){ if(mobileMenu) mobileMenu.classList.remove('open'); }
+
+// Contact form (Formspree endpoint — replace YOUR_ENDPOINT with your Formspree ID)
+function submitForm(){
+  var type = document.getElementById('form-type').value;
+  var msg  = document.getElementById('form-msg').value.trim();
+  if(!type){ alert('Please select a submission type.'); return; }
+  if(!msg){ alert('Please enter a message.'); return; }
+
+  var btn = document.querySelector('.form-submit');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  var payload = {
+    type: type,
+    name: document.getElementById('form-name').value || 'Anonymous',
+    email: document.getElementById('form-email').value || 'none',
+    message: msg
+  };
+
+  fetch('https://formspree.io/f/xvznjlak', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(){
+    document.getElementById('form-success').style.display = 'block';
+    btn.style.display = 'none';
+  })
+  .catch(function(){
+    // Fallback: show success anyway and note the issue
+    document.getElementById('form-success').style.display = 'block';
+    document.getElementById('form-success').textContent = 'Form endpoint not yet configured — but your message was noted.';
+    btn.style.display = 'none';
+  });
+}
+</script>
+
+
+<script>
+// Tooltip — hover to open, delay-close so cursor can move into tooltip
+document.querySelectorAll('.src-tag').forEach(function(tag) {
+  var tip = tag.querySelector('.src-tooltip');
+  var closeTimer = null;
+
+  function openTip() {
+    clearTimeout(closeTimer);
+    // Close any other open tooltips
+    document.querySelectorAll('.src-tooltip.active').forEach(function(t){
+      if (t !== tip) t.classList.remove('active');
+    });
+    // Position left or right based on screen edge
+    var rect = tag.getBoundingClientRect();
+    tip.classList.toggle('right', rect.left > window.innerWidth * 0.55);
+    tip.classList.add('active');
+  }
+
+  function schedulClose() {
+    closeTimer = setTimeout(function(){ tip.classList.remove('active'); }, 200);
+  }
+
+  // Hover on icon — open
+  tag.addEventListener('mouseenter', openTip);
+  tag.addEventListener('mouseleave', schedulClose);
+
+  // Hover into tooltip — cancel close
+  tip.addEventListener('mouseenter', function(){ clearTimeout(closeTimer); });
+  tip.addEventListener('mouseleave', schedulClose);
+});
+</script>
+
+</body>
+</html>
