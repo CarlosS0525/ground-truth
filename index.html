@@ -45,8 +45,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 
 /* CAROUSEL */
 .stat-carousel{border:1px solid var(--border);background:var(--off);padding:2rem 3.5rem 1.5rem;margin-bottom:2.5rem;position:relative;overflow:hidden;-webkit-overflow-scrolling:touch}
-.carousel-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform;-webkit-backface-visibility:hidden}
-.carousel-slide{min-width:100%;width:100%;flex-shrink:0;box-sizing:border-box}
+.carousel-track{display:flex;width:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform;-webkit-backface-visibility:hidden}
+.carousel-slide{min-width:100%;width:100%;max-width:100%;flex-shrink:0;box-sizing:border-box;overflow:hidden}
 .slide-tag{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;display:flex;align-items:center;gap:6px}
 .slide-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
 .slide-number{font-family:'Space Grotesk',sans-serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:1;letter-spacing:-1px;margin-bottom:.5rem}
@@ -127,17 +127,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .stat-sub-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:.5rem 1.25rem .25rem;background:var(--off);border-bottom:1px solid var(--border);grid-column:1/-1}
 
 
-/* SOURCE TOOLTIPS */
-.stat-cell{position:relative}
-.src-tag{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);cursor:pointer;margin-left:5px;vertical-align:middle;opacity:.7;transition:opacity .15s;position:relative}
+/* SOURCE TOOLTIPS — global single tooltip */
+.src-tag{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);cursor:pointer;margin-left:5px;vertical-align:middle;opacity:.7;transition:opacity .15s}
 .src-tag:hover{opacity:1}
 .src-tag svg{width:8px;height:8px;pointer-events:none}
-.src-tooltip{position:absolute;bottom:calc(100% + 8px);left:0;z-index:9999;background:rgba(12,12,12,0.82);backdrop-filter:blur(6px);color:#fff;padding:.6rem .8rem;min-width:220px;max-width:280px;pointer-events:auto;border-radius:0;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s}
-.src-tooltip.active{opacity:1;visibility:visible}
-.src-tooltip.right{left:auto;right:0}
-.src-tooltip-name{font-size:10px;font-weight:600;line-height:1.4;margin-bottom:2px}
-.src-tooltip-year{font-size:9px;opacity:.7;margin-bottom:4px}
-.src-tooltip-link{font-size:9px;opacity:.8;word-break:break-all;text-decoration:underline;cursor:text;user-select:all}
+#gt-tooltip{position:fixed;z-index:9999;background:rgba(12,12,12,0.82);backdrop-filter:blur(6px);color:#fff;padding:.6rem .8rem;min-width:220px;max-width:280px;pointer-events:auto;border-radius:0;opacity:0;visibility:hidden;transition:opacity .15s,visibility .15s;top:0;left:0}
+#gt-tooltip.active{opacity:1;visibility:visible}
+#gt-tooltip-name{font-size:10px;font-weight:600;line-height:1.4;margin-bottom:2px}
+#gt-tooltip-year{font-size:9px;opacity:.7;margin-bottom:4px}
+#gt-tooltip-link{font-size:9px;opacity:.8;word-break:break-all;display:block;margin-top:2px}
+#gt-tooltip-link a{color:#fff;text-decoration:underline;opacity:.8}
 
 /* SCROLL PROGRESS */
 .scroll-progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;background:transparent}
@@ -198,6 +197,11 @@ footer{border-top:1px solid var(--border);padding:2rem;max-width:1100px;margin:0
 </head>
 <body>
 
+<div id="gt-tooltip">
+  <div id="gt-tooltip-name"></div>
+  <div id="gt-tooltip-year"></div>
+  <div id="gt-tooltip-link"></div>
+</div>
 <div class="scroll-progress"><div class="scroll-progress-fill" id="progress-fill"></div></div>
 <nav>
   <a href="#" class="nav-logo">Ground<span>.</span>Truth</a>
@@ -303,51 +307,51 @@ footer{border-top:1px solid var(--border);padding:2rem;max-width:1100px;margin:0
 
   <div class="stat-grid">
     <div class="stat-cell poll">
-      <div class="stat-cell-label">Animal ag. emissions / year<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Nature Food / Global Carbon Project</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">globalcarbonproject.org</div></div></span></div>
+      <div class="stat-cell-label">Animal ag. emissions / year<span class="src-tag" data-name="Nature Food / Global Carbon Project" data-year="2024" data-url="https://www.globalcarbonproject.org" data-label="globalcarbonproject.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">9.8Gt</div>
       <div class="stat-cell-desc">CO₂ equivalent — 57% of all food system emissions globally</div>
       <span class="stat-cell-updated" id="p-s1"></span>
     </div>
     <div class="stat-cell poll">
-      <div class="stat-cell-label">US share of global transport emissions<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">EPA / IEA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">epa.gov/ghgemissions</div></div></span></div>
+      <div class="stat-cell-label">US share of global transport emissions<span class="src-tag" data-name="EPA / IEA" data-year="2024" data-url="https://www.epa.gov/ghgemissions" data-label="epa.gov/ghgemissions" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">20.2%</div>
       <div class="stat-cell-desc">US produces over a fifth of all global transport emissions</div>
       <span class="stat-cell-updated" id="p-s2"></span>
     </div>
     <div class="stat-cell poll">
-      <div class="stat-cell-label">Food wasted globally<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">UNEP Food Waste Index</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">unep.org</div></div></span></div>
+      <div class="stat-cell-label">Food wasted globally<span class="src-tag" data-name="UNEP Food Waste Index" data-year="2024" data-url="https://www.unep.org" data-label="unep.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">1.05B t</div>
-      <div class="stat-cell-desc">Tons per year. 35% of all food produced in the US goes unsold or uneaten.</div>
+      <div class="stat-cell-desc">35% of all food produced in the US goes unsold or uneaten — every year.</div>
       <span class="stat-cell-updated" id="p-s3"></span>
     </div>
     <div class="stat-cell poll">
-      <div class="stat-cell-label">Water per kg beef wasted<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">UNESCO-IHE / Mekonnen & Hoekstra</div><div class="src-tooltip-year">2012</div><div class="src-tooltip-link">waterfootprint.org</div></div></span></div>
+      <div class="stat-cell-label">Water per kg beef wasted<span class="src-tag" data-name="UNESCO-IHE / Mekonnen & Hoekstra" data-year="2012" data-url="https://www.waterfootprint.org" data-label="waterfootprint.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">25,000L</div>
-      <div class="stat-cell-desc">Liters of embedded water discarded when one kilogram of beef goes uneaten</div>
+      <div class="stat-cell-desc">The embedded water discarded every time one kilogram of beef goes uneaten</div>
       <span class="stat-cell-updated" id="p-s4"></span>
     </div>
     <div class="stat-cell poll">
-      <div class="stat-cell-label">US food waste annual cost<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">ReFED / USDA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">refed.org</div></div></span></div>
+      <div class="stat-cell-label">US food waste annual cost<span class="src-tag" data-name="ReFED / USDA" data-year="2024" data-url="https://refed.org" data-label="refed.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">$218B</div>
       <div class="stat-cell-desc">Spent growing, processing, and disposing of food Americans never eat</div>
       <span class="stat-cell-updated" id="p-s5"></span>
     </div>
     <div class="stat-cell poll">
-      <div class="stat-cell-label">Top 20 corps — global emissions<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">CDP / Climate Accountability Inst.</div><div class="src-tooltip-year">2019</div><div class="src-tooltip-link">climateaccountability.org</div></div></span></div>
+      <div class="stat-cell-label">Top 20 corps — global emissions<span class="src-tag" data-name="CDP / Climate Accountability Inst." data-year="2019" data-url="https://climateaccountability.org" data-label="climateaccountability.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">35%</div>
       <div class="stat-cell-desc">Estimated share of all industrial greenhouse emissions attributable to 20 companies since 1965</div>
       <span class="stat-cell-updated" id="p-s6"></span>
     </div>
     <div class="stat-cell poll">
-      <div class="stat-cell-label">Agriculture's freshwater share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">FAO AQUASTAT / WWAP</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">fao.org/aquastat</div></div></span></div>
+      <div class="stat-cell-label">Agriculture's freshwater share<span class="src-tag" data-name="FAO AQUASTAT / WWAP" data-year="2023" data-url="https://www.fao.org/aquastat" data-label="fao.org/aquastat" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">70%</div>
       <div class="stat-cell-desc">Of all global freshwater withdrawals go to agriculture — animal farming accounts for the dominant share in most regions</div>
       <span class="stat-cell-updated" id="p-s7"></span>
     </div>
     <div class="stat-cell poll">
-      <div class="stat-cell-label">Water to produce 1kg of beef<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Mekonnen & Hoekstra / UNESCO-IHE</div><div class="src-tooltip-year">2012</div><div class="src-tooltip-link">waterfootprint.org</div></div></span></div>
+      <div class="stat-cell-label">Water to produce 1kg of beef<span class="src-tag" data-name="Mekonnen & Hoekstra / UNESCO-IHE" data-year="2012" data-url="https://www.waterfootprint.org" data-label="waterfootprint.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--poll)">15,400L</div>
-      <div class="stat-cell-desc">Liters of freshwater required on average — vs. 1,250L for 1kg of wheat. The gap is embedded in every meal.</div>
+      <div class="stat-cell-desc">Freshwater required on average to produce 1kg of beef — vs. 1,250L for 1kg of wheat. The gap is embedded in every meal.</div>
       <span class="stat-cell-updated" id="p-s8"></span>
     </div>
   </div>
@@ -393,49 +397,49 @@ footer{border-top:1px solid var(--border);padding:2rem;max-width:1100px;margin:0
 
   <div class="stat-grid">
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">Top 1% US wealth share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Federal Reserve / World Inequality Database</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">wid.world</div></div></span></div>
+      <div class="stat-cell-label">Top 1% US wealth share<span class="src-tag" data-name="Federal Reserve / World Inequality Database" data-year="2024" data-url="https://wid.world" data-label="wid.world" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">32%</div>
       <div class="stat-cell-desc">Of all US wealth held by the top 1% of households</div>
       <span class="stat-cell-updated" id="w-s1"></span>
     </div>
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">Bottom 50% US wealth share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Federal Reserve DFA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">federalreserve.gov</div></div></span></div>
+      <div class="stat-cell-label">Bottom 50% US wealth share<span class="src-tag" data-name="Federal Reserve DFA" data-year="2024" data-url="https://www.federalreserve.gov" data-label="federalreserve.gov" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">2.5%</div>
       <div class="stat-cell-desc">Of all US wealth held by the bottom half of the population</div>
       <span class="stat-cell-updated" id="w-s2"></span>
     </div>
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">CEO-to-worker pay ratio<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Economic Policy Institute</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">epi.org</div></div></span></div>
+      <div class="stat-cell-label">CEO-to-worker pay ratio<span class="src-tag" data-name="Economic Policy Institute" data-year="2024" data-url="https://www.epi.org" data-label="epi.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">350:1</div>
       <div class="stat-cell-desc">Compared to 21:1 in 1965. Worker productivity has also roughly doubled over the same period.</div>
       <span class="stat-cell-updated" id="w-s3"></span>
     </div>
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">Billionaire wealth growth 2020–23<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Oxfam / Forbes</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">oxfam.org</div></div></span></div>
+      <div class="stat-cell-label">Billionaire wealth growth 2020–23<span class="src-tag" data-name="Oxfam / Forbes" data-year="2023" data-url="https://www.oxfam.org" data-label="oxfam.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">+$2.2T</div>
       <div class="stat-cell-desc">Increase in combined billionaire wealth during COVID-19</div>
       <span class="stat-cell-updated" id="w-s4"></span>
     </div>
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">Racial wealth gap — median<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Fed Survey of Consumer Finances</div><div class="src-tooltip-year">2022</div><div class="src-tooltip-link">federalreserve.gov</div></div></span></div>
+      <div class="stat-cell-label">Racial wealth gap — median<span class="src-tag" data-name="Fed Survey of Consumer Finances" data-year="2022" data-url="https://www.federalreserve.gov" data-label="federalreserve.gov" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">8:1</div>
       <div class="stat-cell-desc">White median household wealth (~$188k) vs. Black median (~$24k)</div>
       <span class="stat-cell-updated" id="w-s5"></span>
     </div>
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">Productivity vs. wage growth 1979–2020<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Economic Policy Institute</div><div class="src-tooltip-year">2021</div><div class="src-tooltip-link">epi.org</div></div></span></div>
+      <div class="stat-cell-label">Productivity vs. wage growth 1979–2020<span class="src-tag" data-name="Economic Policy Institute" data-year="2021" data-url="https://www.epi.org" data-label="epi.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">+64%</div>
       <div class="stat-cell-desc">US productivity growth since 1979. Real wages for the bottom half: essentially flat.</div>
       <span class="stat-cell-updated" id="w-s6"></span>
     </div>
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">Workers without retirement savings<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">National Institute on Retirement Security</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">nirsonline.org</div></div></span></div>
+      <div class="stat-cell-label">Workers without retirement savings<span class="src-tag" data-name="National Institute on Retirement Security" data-year="2023" data-url="https://www.nirsonline.org" data-label="nirsonline.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">~55%</div>
       <div class="stat-cell-desc">Estimated share of Americans with no meaningful retirement savings — across all racial groups</div>
       <span class="stat-cell-updated" id="w-s7"></span>
     </div>
     <div class="stat-cell wealth">
-      <div class="stat-cell-label">Americans without safe water access<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">USGS / Pacific Institute</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">pacinst.org</div></div></span></div>
+      <div class="stat-cell-label">Americans without safe water access<span class="src-tag" data-name="USGS / Pacific Institute" data-year="2023" data-url="https://pacinst.org" data-label="pacinst.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--wealth)">~2M</div>
       <div class="stat-cell-desc">People in the US lacking running water or basic indoor plumbing — concentrated in low-income, rural, and indigenous communities</div>
       <span class="stat-cell-updated" id="w-s8"></span>
@@ -473,50 +477,50 @@ footer{border-top:1px solid var(--border);padding:2rem;max-width:1100px;margin:0
   <div class="stat-grid">
     <div class="stat-sub-label">Infrastructure &amp; Energy</div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">Projected data center demand 2030<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">International Energy Agency</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">iea.org</div></div></span></div>
+      <div class="stat-cell-label">Projected data center demand 2030<span class="src-tag" data-name="International Energy Agency" data-year="2024" data-url="https://www.iea.org" data-label="iea.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">945TWh</div>
       <div class="stat-cell-desc">Terawatt hours — roughly equivalent to Japan's total national electricity consumption today</div>
       <span class="stat-cell-updated" id="t-s1"></span>
     </div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">US data center emissions 2023<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Lawrence Berkeley National Lab / EPA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">lbl.gov</div></div></span></div>
+      <div class="stat-cell-label">US data center emissions 2023<span class="src-tag" data-name="Lawrence Berkeley National Lab / EPA" data-year="2024" data-url="https://www.lbl.gov" data-label="lbl.gov" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">105Mt</div>
       <div class="stat-cell-desc">Million tons CO₂ equivalent — 2.18% of all US emissions, with 56% from fossil fuels</div>
       <span class="stat-cell-updated" id="t-s2"></span>
     </div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">Global nuclear investment 2024<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">World Nuclear Association / IEA</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">world-nuclear.org</div></div></span></div>
+      <div class="stat-cell-label">Global nuclear investment 2024<span class="src-tag" data-name="World Nuclear Association / IEA" data-year="2024" data-url="https://world-nuclear.org" data-label="world-nuclear.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">$80B</div>
       <div class="stat-cell-desc">Doubled from $40B in 2020 — driven by AI energy demand from major tech companies</div>
       <span class="stat-cell-updated" id="t-s3"></span>
     </div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">Work tasks at risk from automation<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">McKinsey Global Institute</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">mckinsey.com</div></div></span></div>
+      <div class="stat-cell-label">Work tasks at risk from automation<span class="src-tag" data-name="McKinsey Global Institute" data-year="2024" data-url="https://www.mckinsey.com" data-label="mckinsey.com" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">~30%</div>
       <div class="stat-cell-desc">McKinsey Global Institute, 2024. The economic gains flow primarily to whoever owns the technology.</div>
       <span class="stat-cell-updated" id="t-s4"></span>
     </div>
     <div class="stat-sub-label">Ownership &amp; Labor</div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">Big 3 cloud market share<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Synergy Research Group</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">srgresearch.com</div></div></span></div>
+      <div class="stat-cell-label">Big 3 cloud market share<span class="src-tag" data-name="Synergy Research Group" data-year="2024" data-url="https://www.srgresearch.com" data-label="srgresearch.com" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">66%</div>
       <div class="stat-cell-desc">AWS, Microsoft Azure, and Google Cloud control roughly two thirds of global cloud infrastructure</div>
       <span class="stat-cell-updated" id="t-s5"></span>
     </div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">AI vs. animal ag. emissions<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">IEA / FAO / Climate Trace</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">climatetrace.org</div></div></span></div>
+      <div class="stat-cell-label">AI vs. animal ag. emissions<span class="src-tag" data-name="IEA / FAO / Climate Trace" data-year="2024" data-url="https://climatetrace.org" data-label="climatetrace.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">~100×</div>
       <div class="stat-cell-desc">Animal agriculture currently produces ~100× more CO₂ equivalent than AI data centers — but AI is growing faster</div>
       <span class="stat-cell-updated" id="t-s6"></span>
     </div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">Data center water use — US 2023<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">Lawrence Berkeley National Lab</div><div class="src-tooltip-year">2024</div><div class="src-tooltip-link">lbl.gov</div></div></span></div>
+      <div class="stat-cell-label">Data center water use — US 2023<span class="src-tag" data-name="Lawrence Berkeley National Lab" data-year="2024" data-url="https://www.lbl.gov" data-label="lbl.gov" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">600B gal</div>
-      <div class="stat-cell-desc">Gallons used annually for server cooling — Google's data centers alone used ~5.6B gallons in 2022, enough for 100,000 US homes</div>
+      <div class="stat-cell-desc">Used annually for server cooling across US data centers — Google alone used ~5.6B gallons in 2022, enough for 100,000 homes</div>
       <span class="stat-cell-updated" id="t-s7"></span>
     </div>
     <div class="stat-cell tech">
-      <div class="stat-cell-label">Congo mineral wealth<span class="src-tag" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg><div class="src-tooltip"><div class="src-tooltip-name">World Bank / USGS</div><div class="src-tooltip-year">2023</div><div class="src-tooltip-link">worldbank.org</div></div></span></div>
+      <div class="stat-cell-label">Congo mineral wealth<span class="src-tag" data-name="World Bank / USGS" data-year="2023" data-url="https://www.worldbank.org" data-label="worldbank.org" tabindex="0"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="4"/><line x1="5" y1="4" x2="5" y2="7"/><circle cx="5" cy="2.8" r=".4" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="stat-cell-num" style="color:var(--tech)">$24T</div>
       <div class="stat-cell-desc">DRC contains most of the world's cobalt — essential for EV batteries and smartphones. One of the poorest nations by GDP per capita.</div>
       <span class="stat-cell-updated" id="t-s8"></span>
@@ -843,57 +847,86 @@ function closeMobile(){ if(mobileMenu) mobileMenu.classList.remove('open'); }
 
 
 <script>
-// Tooltip — hover on desktop, tap on mobile
-document.querySelectorAll('.src-tag').forEach(function(tag) {
-  var tip = tag.querySelector('.src-tooltip');
+// Global single tooltip — no clipping, no grid boundary issues
+(function(){
+  var tip    = document.getElementById('gt-tooltip');
+  var tipName = document.getElementById('gt-tooltip-name');
+  var tipYear = document.getElementById('gt-tooltip-year');
+  var tipLink = document.getElementById('gt-tooltip-link');
   var closeTimer = null;
   var isTouch = false;
+  var activeTag = null;
 
-  function closeAll() {
-    document.querySelectorAll('.src-tooltip.active').forEach(function(t){ t.classList.remove('active'); });
+  function populate(tag) {
+    tipName.textContent = tag.dataset.name  || '';
+    tipYear.textContent = tag.dataset.year  || '';
+    var url   = tag.dataset.url   || '#';
+    var label = tag.dataset.label || url.replace('https://','').replace('www.','');
+    tipLink.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener">' + label + '</a>';
   }
 
-  function openTip() {
-    clearTimeout(closeTimer);
-    closeAll();
+  function position(tag) {
     var rect = tag.getBoundingClientRect();
-    tip.classList.toggle('right', rect.left > window.innerWidth * 0.55);
+    var tw = 260; // approx tooltip width
+    var top = rect.top - 8;
+    var left = rect.left;
+    // Flip above if near bottom
+    // Flip left if near right edge
+    if (left + tw > window.innerWidth - 16) left = window.innerWidth - tw - 16;
+    if (left < 8) left = 8;
+    tip.style.top  = top + 'px';
+    tip.style.left = left + 'px';
+    tip.style.transform = 'translateY(-100%)';
+  }
+
+  function open(tag) {
+    clearTimeout(closeTimer);
+    activeTag = tag;
+    populate(tag);
+    position(tag);
     tip.classList.add('active');
   }
 
   function scheduleClose() {
-    closeTimer = setTimeout(function(){ tip.classList.remove('active'); }, 200);
+    closeTimer = setTimeout(function(){ tip.classList.remove('active'); activeTag = null; }, 220);
   }
 
-  // Desktop hover
-  tag.addEventListener('mouseenter', function(){ if(!isTouch) openTip(); });
-  tag.addEventListener('mouseleave', function(){ if(!isTouch) scheduleClose(); });
-  tip.addEventListener('mouseenter', function(){ if(!isTouch) clearTimeout(closeTimer); });
-  tip.addEventListener('mouseleave', function(){ if(!isTouch) scheduleClose(); });
+  function close() { tip.classList.remove('active'); activeTag = null; }
 
-  // Mobile tap
-  tag.addEventListener('touchstart', function(e){
-    isTouch = true;
-    e.stopPropagation();
-    if(tip.classList.contains('active')){
-      tip.classList.remove('active');
-    } else {
-      openTip();
-    }
+  document.querySelectorAll('.src-tag').forEach(function(tag) {
+    // Desktop hover
+    tag.addEventListener('mouseenter', function(){ if(!isTouch) open(tag); });
+    tag.addEventListener('mouseleave', function(){ if(!isTouch) scheduleClose(); });
+
+    // Mobile tap
+    tag.addEventListener('touchstart', function(e){
+      isTouch = true;
+      e.stopPropagation();
+      if(tip.classList.contains('active') && activeTag === tag){
+        close();
+      } else {
+        open(tag);
+      }
+    }, {passive:true});
+  });
+
+  // Keep open when hovering the tooltip itself
+  tip.addEventListener('mouseenter', function(){ clearTimeout(closeTimer); });
+  tip.addEventListener('mouseleave', scheduleClose);
+
+  // Close on scroll
+  window.addEventListener('scroll', close, {passive:true});
+
+  // Close on outside tap
+  document.addEventListener('touchstart', function(e){
+    if(!e.target.closest('.src-tag') && !e.target.closest('#gt-tooltip')) close();
   }, {passive:true});
-});
 
-// Close on scroll (mobile)
-window.addEventListener('scroll', function(){
-  document.querySelectorAll('.src-tooltip.active').forEach(function(t){ t.classList.remove('active'); });
-}, {passive:true});
-
-// Close on tap outside
-document.addEventListener('touchstart', function(e){
-  if(!e.target.closest('.src-tag')){
-    document.querySelectorAll('.src-tooltip.active').forEach(function(t){ t.classList.remove('active'); });
-  }
-}, {passive:true});
+  // Close on outside click
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.src-tag') && !e.target.closest('#gt-tooltip')) close();
+  });
+})();
 </script>
 
 </body>
